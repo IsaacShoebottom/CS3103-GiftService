@@ -1,0 +1,5 @@
+Flask==3.0.2
+flask_restful==0.3.10
+flask_session==0.7.0
+ldap3==2.9.1
+pymysql==1.1.0
