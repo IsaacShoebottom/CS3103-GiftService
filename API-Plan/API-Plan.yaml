@@ -1,0 +1,148 @@
+openapi: 3.0.2
+info:
+  title: Present Registry
+  version: 1.0.0
+  description: API for managing presents for users
+servers:
+  - url: http://cs3103.cs.unb.ca:8033
+paths:
+  /:
+    get:
+      summary: Get index page
+      responses:
+        '200':
+          description: Index page returned successfully
+  /dev:
+    get:
+      summary: Get developer page
+      responses:
+        '200':
+          description: Developer page returned successfully
+  /auth/login:
+    post:
+      summary: Log the user into the authentication endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Authentication successful
+        '401':
+          description: Authentication failed
+  /auth/status:
+    get:
+      summary: Check if the user is logged into the authentication endpoint
+      responses:
+        '200':
+          description: User is logged in
+        '401':
+          description: User is not logged in
+  /auth/logout:
+    post:
+      summary: Unlog the user from the authentication endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: User has been logged out
+        '401':
+          description: User not found
+  /user:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Username:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Bad request
+  /present:
+    post:
+      summary: Create a new present
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Username:
+                  type: string
+                Title:
+                  type: string
+                Link:
+                  type: string
+      responses:
+        '201':
+          description: Present created successfully
+        '400':
+          description: Bad request
+    put:
+      summary: Update a present
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Username:
+                  type: string
+                Title:
+                  type: string
+                nTitle:
+                  type: string
+                nLink:
+                  type: string
+      responses:
+        '204':
+          description: Present updated successfully
+        '400':
+          description: Bad request
+    delete:
+      summary: Delete a present
+      responses:
+        '204':
+          description: Present deleted successfully
+        '400':
+          description: Bad request
+  /presents/{username}:
+    get:
+      summary: Retrieve all presents for a specific username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Username of the user whose presents are to be retrieved
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Presents retrieved successfully
+        '400':
+          description: Bad request
+        '404':
+          description: Resource not found
