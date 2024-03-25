@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Developer Documentation</title>
+</head>
+<body>
+  <h1>Present Registry Web Service</h1>
+  <p>This documentation lists the endpoints for app, so that
+  developers can write their own awesome applications that use
+  the app webservice!</p>
+  <dl>
+  <dt><code>/presents/&lt;string:username&gt;</code></dt>
+  <dd>
+    <p>GET: Returns a json document containing the all presents for the specified username.</p>
+    <p>Example: <code>/presents/admin</code> results in</p>
+    <pre>
+      {
+        "presents": [
+          {
+            "link": "example.com",
+            "presentId": "1",
+            "title": "Test"
+          },
+          {
+            "link": "example2.com",
+            "presentId": "2",
+            "title": "Test2"
+          },
+          
+          etc...
+      }
+    </pre>
+  </dd>
+  </dl>
+</body>
+</html>
