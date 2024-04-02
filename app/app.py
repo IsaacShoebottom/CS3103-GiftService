@@ -55,6 +55,8 @@ api.add_resource(Developer,'/dev')
 #
 class auth(Resource):
 
+	# Log the user in
+	# curl -i -H "Content-Type: application/json" -X POST -d '{"username": "bfanjoy", "password": "pass"}' -c cookie-jar http://cs3103.cs.unb.ca:8033/auth/login
 	@app.route('/auth/login', methods=['POST'])
 	def login():
 		if not request.json:
@@ -96,17 +98,30 @@ class auth(Resource):
 		return make_response(jsonify(response), responseCode)
 
 	# Check for a login
+	# curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8033/auth/status
 	@app.route('/auth/status', methods=['GET'])
 	def status():
-		data = request.json
-		username = data.get('username')
-		pass
+		if 'username' in session:
+			response = {'status': 'success'}
+			responseCode = 200
+		else:
+			response = {'status': 'fail'}
+			responseCode = 403
 
+		return make_response(jsonify(response), responseCode)
+
+	# Log the user out
+	# curl -i -H "Content-Type: application/json" -X POST -b cookie-jar http://cs3103.cs.unb.ca:8033/auth/logout
 	@app.route('/auth/logout', methods=['POST'])
 	def logout():
-		data = request.json
-		username = data.get('username')
-		pass
+		try:
+			session.pop('username', None)
+			response = {'status': 'success'}
+			responseCode = 200
+		except (LDAPException, error_message):
+				response = {'status': 'Access denied'}
+				responseCode = 403
+		return make_response(jsonify(response), responseCode)
 
 ####################################################################################
 #

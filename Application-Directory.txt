@@ -1,0 +1,1 @@
+'app' holds all relevant app files, 'static' inside of 'app' holds the static pages, 'db' holds all database scritps
