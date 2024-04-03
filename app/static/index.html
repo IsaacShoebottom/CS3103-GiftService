@@ -9,34 +9,26 @@
 </head>
 <body>
   <div class="container-fluid" id="app">
-    <div>
-      <label>Username:</label>
-      <input type="text" v-model="username">
-      <br>
-      <label>Password:</label>
-      <input type="password" v-model="password">
-      <br>
-      <button @click="login(username, password)">Login</button>
-      <button @click="logout()">Logout</button>
-      <p v-if="loggedIn">Logged in as {{ username }}</p>
-      <p v-else>Not logged in</p>
+      <div class="input-group">
+        <input class="form-control" placeholder="Username" type="text" v-model="username">
+        <input class="form-control" placeholder="Password" type="password" v-model="password">
+        <button v-if="loggedIn" class="btn btn-primary" @click="logout()">Logout</button>
+        <button v-else class="btn btn-primary" @click="login(username, password)">Login</button>
+      </div>
+    <br>
+    <div class="input-group">
+      <input class="form-control" placeholder="Name" type="text" v-model="addName">
+      <input class="form-control" placeholder="Link" type="text" v-model="addLink">
+      <button class="btn btn-primary" @click="add(addName, addLink)">Add</button>
     </div>
     <br>
     <div>
-      <label>Name:</label>
-      <input type="text" v-model="addName">
-      <br>
-      <label>Link:</label>
-      <input type="text" v-model="addLink">
-      <br>
-      <button @click="add(addName, addLink)">Add</button>
-    </div>
-    <br>
-    <div>
-      <label>Search:</label>
-      <input type="text" v-model="term">
-      <button @click="search(term)">Search</button>
-      <table>
+      <div class="input-group">
+        <input class="form-control" placeholder="Search" type="text" v-model="term">
+        <button class="btn btn-primary" @click="search(term)">Search</button>
+      </div>
+      
+      <table class="table">
         <tr>
           <th>Name</th>
           <th>Link</th>
@@ -46,8 +38,8 @@
         <tr v-for="present in presents">
           <td>{{ present.title }}</td>
           <td>{{ present.link }}</td>
-          <td><button @click="editModal(present.presentId)">Edit</button></td>
-          <td><button @click="remove(present.presentId)">Delete</button></td>
+          <td><button class="btn btn-primary" @click="editModal(present.presentId)">Edit</button></td>
+          <td><button class="btn btn-primary" @click="remove(present.presentId)">Delete</button></td>
         </tr>
       </table>
     </div>
@@ -56,7 +48,7 @@
       <input type="text" v-model="editName">
       <label>Link:</label>
       <input type="text" v-model="editLink">
-      <button @click="edit(editId, editName, editLink)">Update</button>
+      <button class="btn btn-primary" @click="edit(editId, editName, editLink)">Update</button>
     </div>
   </div>
 </body>
