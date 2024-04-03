@@ -1,2 +1,0 @@
-# Do not commit secret keys!!!
-settings.py
