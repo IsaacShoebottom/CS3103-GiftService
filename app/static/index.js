@@ -85,6 +85,7 @@ createApp({
             })
                 .then(response => {
                     console.log(response.data)
+                    editMode.value = false
                     search(term.value)
                 })
                 .catch(error => {
