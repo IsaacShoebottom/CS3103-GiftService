@@ -4,3 +4,4 @@ settings.py
 # Cache and session files
 __pycache__/
 flask_session/
+.DS_Store
