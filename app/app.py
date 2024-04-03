@@ -19,10 +19,7 @@ app.config['SESSION_COOKIE_NAME'] = 'peanutButter'
 app.config['SESSION_COOKIE_DOMAIN'] = settings.APP_HOST
 Session(app)
 
-####################################################################################
-#
 # Error handlers
-#
 @app.errorhandler(400) # decorators to add to 400 response
 def not_found(error):
 	return make_response(jsonify( { "status": "Bad request" } ), 400)
@@ -31,10 +28,7 @@ def not_found(error):
 def not_found(error):
 	return make_response(jsonify( { "status": "Resource not found" } ), 404)
 
-####################################################################################
-#
 # Static Endpoints
-#
 class Root(Resource):
    # get method for index page
 	def get(self):
@@ -49,10 +43,8 @@ class Developer(Resource):
 
 api.add_resource(Developer,'/dev')
 
-####################################################################################
-#
-# auth routing: LOGIN, STATUS, LOGOUT
-#
+
+# Auth routing: LOGIN, STATUS, LOGOUT
 class auth(Resource):
 
 	# Log the user in
@@ -89,11 +81,18 @@ class auth(Resource):
 				session['username'] = request_params['username']
 				response = {'status': 'success' }
 				responseCode = 201
-			except (LDAPException, error_message):
+			except (LDAPException):
 				response = {'status': 'Access denied'}
 				responseCode = 403
 			finally:
 				ldapConnection.unbind()
+
+		sqlProc = 'createUser'
+		sqlArgs = [request_params['username']]
+		try:
+			row = db_access(sqlProc, sqlArgs)
+		except Exception as e:
+			abort(500, message = e) # server error
 
 		return make_response(jsonify(response), responseCode)
 
@@ -105,56 +104,22 @@ class auth(Resource):
 			response = {'status': 'success'}
 			responseCode = 200
 		else:
-			response = {'status': 'fail'}
+			response = {'status': 'failure'}
 			responseCode = 403
-
 		return make_response(jsonify(response), responseCode)
 
-	# Log the user out
-	# curl -i -H "Content-Type: application/json" -X POST -b cookie-jar http://cs3103.cs.unb.ca:8033/auth/logout
 	@app.route('/auth/logout', methods=['POST'])
 	def logout():
 		try:
 			session.pop('username', None)
 			response = {'status': 'success'}
-			responseCode = 200
-		except (LDAPException, error_message):
-				response = {'status': 'Access denied'}
-				responseCode = 403
+			responseCode = 204
+		except:
+			response = {'status': 'failure'}
+			responseCode = 403
 		return make_response(jsonify(response), responseCode)
-
-####################################################################################
-#
-# users routing: POST
-#
-class user(Resource):
-
-	# POST: Create a new user
-
-	def post(self):
-        
-        # Sample command line usage:
-        #
-        # curl -i -X POST -H "Content-Type: application/json" -d '{"Username": "Rick"}' http://cs3103.cs.unb.ca:8033/user
-
-		if not request.json or not 'Username' in request.json:
-			abort(400) # bad request
-
-		username = request.json['Username'];
-
-		sqlProc = 'createUser'
-		sqlArgs = [username]
-		try:
-			row = db_access(sqlProc, sqlArgs)
-		except Exception as e:
-			abort(500, message = e) # server error
-
-		return make_response('User created', 201) # successful resource creation
 	
-####################################################################################
-#
-# presents routing: GET
-#
+# Presents routing: GET
 class presents(Resource):
 
 	# GET: Retrieve all presents from a specific username
@@ -173,24 +138,15 @@ class presents(Resource):
 			abort(500, message = e) # server error
 		return make_response(jsonify({'presents': rows}), 200) # turn set into json and return it
 	
-####################################################################################
-#
-# present routing: POST, PUT, DELETE
-#
-class present(Resource):
-
-	# POST: Create a new present
-
-	def post(self):
+	def post(self, username):
         
         # Sample command line usage:
         #
-        # curl -i -X POST -H "Content-Type: application/json" -d '{"Username": "admin", "Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/present
+        # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
 
-		if not request.json or not 'Username' in request.json:
+		if 'username' not in session or session['username'] != username:
 			abort(400) # bad request
 
-		username = request.json['Username'];
 		title = request.json['Title'];
 		link = request.json['Link'];
 
@@ -204,23 +160,19 @@ class present(Resource):
 		return make_response('Present created', 201) # successful resource creation
 	
 	# PUT: Update a specific present
-    
-	def put(self):
-		
-		# Sample command line usage:
-		#
-        # curl -i -X PUT -H "Content-Type: application/json" -d '{"Username": "Rick", "Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/present
-
-		if not request.json or not 'Username' in request.json:
+	# Sample command line usage:
+    # curl -i -X PUT -H "Content-Type: application/json" -d '{"Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/presents
+	def put(self, username):
+		if not request.json:
 			abort(400) # bad request
 
-		username = request.json['Username'];
-		title = request.json['Title'];
-		nTitle = request.json['nTitle'];
-		nLink = request.json['nLink'];
+		id = request.json['Id']
+		id = int(id)
+		title = request.json['Title']
+		link = request.json['Link']
 
-		sqlProc = 'updatePresent'
-		sqlArgs = [username, title, nTitle, nLink]
+		sqlProc = 'updatePresentById'
+		sqlArgs = [id, title, link]
 		try:
 			row = db_access(sqlProc, sqlArgs)
 		except Exception as e:
@@ -229,21 +181,19 @@ class present(Resource):
 		return make_response('Present updated', 204)
 	
 	# DELETE: Delete a specific present
-    
-	def delete(self):
-		
-		# Sample command line usage:
-		#
-        # curl -i -X DELETE -H "Content-Type: application/json" -d '{"Username": "Rick", "Title": "Book"}' http://cs3103.cs.unb.ca:8033/present
-
-		if not request.json or not 'Username' in request.json:
+	# Sample command line usage:
+	# curl -i -X DELETE -H "Content-Type: application/json" -d '{"Id": "id"}' http://cs3103.cs.unb.ca:8033/presents/ishoebot/
+	def delete(self, username):
+		if not request.json:
 			abort(400) # bad request
 
-		username = request.json['Username'];
-		title = request.json['Title'];
+		id = request.json['Id']
+		id = int(id)
 
-		sqlProc = 'deletePresent'
-		sqlArgs = [username, title]
+		#sqlProc = 'deletePresent'
+		#sqlArgs = [username, title]
+		sqlProc = 'deletePresentById'
+		sqlArgs = [id]
 		try:
 			row = db_access(sqlProc, sqlArgs)
 		except Exception as e:
@@ -251,16 +201,10 @@ class present(Resource):
 		
 		return make_response('Present deleted', 204)
 
-####################################################################################
-#
 # Identify/create endpoints and endpoint objects
-#
 api = Api(app)
-api.add_resource(user, '/user')
-api.add_resource(present, '/present')
-api.add_resource(presents, '/presents/<string:username>')
+api.add_resource(presents, '/presents/<string:username>/')
 
-#############################################################################
+# Main
 if __name__ == "__main__":
-#   app.run(host="cs3103.cs.unb.ca", port=8033, debug=True)
 	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG)

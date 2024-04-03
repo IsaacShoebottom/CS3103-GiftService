@@ -1,0 +1,8 @@
+DELIMITER //
+DROP PROCEDURE IF EXISTS deletePresentById //
+
+CREATE PROCEDURE deletePresentById(IN idIn INT)
+BEGIN
+DELETE FROM presents WHERE presentId = idIn;
+END//
+DELIMITER ;

@@ -1,2 +1,6 @@
 # Do not commit secret keys!!!
 settings.py
+
+# Cache and session files
+__pycache__/
+flask_session/
