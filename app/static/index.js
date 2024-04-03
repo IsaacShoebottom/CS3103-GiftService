@@ -22,7 +22,6 @@ createApp({
                     console.log(response.data)
                     term.value = username.value
                     search(username.value)
-                    password.value = ''
                     loggedIn.value = true
                 })
                 .catch(error => {
@@ -34,8 +33,6 @@ createApp({
             axios.post('/auth/logout')
                 .then(response => {
                     console.log(response.data)
-                    username.value = ''
-                    password.value = ''
                     loggedIn.value = false
                 })
                 .catch(error => {
@@ -57,7 +54,7 @@ createApp({
         }
 
         function editModal(id) {
-            editMode.value = !editMode.value
+            editMode.value = true
             editId.value = id
         }
 
@@ -70,7 +67,7 @@ createApp({
             })
                 .then(response => {
                     console.log(response.data)
-                    editMode.value = !editMode.value
+                    editMode.value = false
                     search(term.value)
                 })
                 .catch(error => {
@@ -117,6 +114,7 @@ createApp({
             editName,
             editLink,
             editMode,
+            loggedIn,
             editModal,
             search,
             logout,
