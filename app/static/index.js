@@ -12,6 +12,7 @@ createApp({
         const editName = ref('')
         const editLink = ref('')
         const loggedIn = ref(false)
+        const view = ref('profile')
 
         function login(username, password) {
             axios.post('/auth/login', {
@@ -53,7 +54,7 @@ createApp({
                 })
         }
 
-        function editModal(id) {
+        function editModal(id, index) {
             editMode.value = true
             editId.value = id
         }
@@ -115,6 +116,7 @@ createApp({
             editLink,
             editMode,
             loggedIn,
+            view,
             editModal,
             search,
             logout,
