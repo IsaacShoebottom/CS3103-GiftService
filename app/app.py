@@ -8,7 +8,7 @@ from flask_session import Session
 import cgitb
 cgitb.enable()
 
-from db_util import db_access
+from util import db_access, auth_route, check_route_data
 import settings # Our server and db settings, stored in settings.py
 
 app = Flask(__name__, static_url_path='/static')
@@ -46,7 +46,6 @@ api.add_resource(Developer,'/dev')
 
 # Auth routing: LOGIN, STATUS, LOGOUT
 class auth(Resource):
-
 	# Log the user in
 	# curl -i -H "Content-Type: application/json" -X POST -d '{"username": "bfanjoy", "password": "pass"}' -c cookie-jar http://cs3103.cs.unb.ca:8033/auth/login
 	@app.route('/auth/login', methods=['POST'])
@@ -90,7 +89,7 @@ class auth(Resource):
 		sqlProc = 'createUser'
 		sqlArgs = [request_params['username']]
 		try:
-			row = db_access(sqlProc, sqlArgs)
+			db_access(sqlProc, sqlArgs)
 		except Exception as e:
 			abort(500, message = e) # server error
 
@@ -101,7 +100,10 @@ class auth(Resource):
 	@app.route('/auth/status', methods=['GET'])
 	def status():
 		if 'username' in session:
-			response = {'status': 'success'}
+			response = {
+				'status': 'success',
+				'username': session['username']
+				}
 			responseCode = 200
 		else:
 			response = {'status': 'failure'}
@@ -119,17 +121,11 @@ class auth(Resource):
 			responseCode = 403
 		return make_response(jsonify(response), responseCode)
 	
-# Presents routing: GET
 class presents(Resource):
-
-	# GET: Retrieve all presents from a specific username
-
+ 	# GET: Retrieve all presents from a specific username
+ 	# Sample command line usage:
+    # curl -i -X GET http://cs3103.cs.unb.ca:8033/presents/Rick
 	def get(self, username):
-
-		# Sample command line usage:
-        #
-        # curl -i -X GET http://cs3103.cs.unb.ca:8033/presents/Rick
-		
 		sqlProc = 'getPresentsByUsername'
 		sqlArgs = [username]
 		try:
@@ -138,17 +134,16 @@ class presents(Resource):
 			abort(500, message = e) # server error
 		return make_response(jsonify({'presents': rows}), 200) # turn set into json and return it
 	
-	def post(self, username):
-        
-        # Sample command line usage:
-        #
-        # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
+	# Sample command line usage:
+    # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
+	def post(self):
+		responce, responseCode, success = auth_route(session)
+		responce, responseCode, success = check_route_data(request)
+		if not success:
+			return make_response(jsonify(responce), responseCode)
 
-		if 'username' not in session or session['username'] != username:
-			abort(400) # bad request
-
-		title = request.json['Title'];
-		link = request.json['Link'];
+		title = request.json['Title']
+		link = request.json['Link']
 
 		sqlProc = 'createPresent'
 		sqlArgs = [username, title, link]
@@ -162,9 +157,11 @@ class presents(Resource):
 	# PUT: Update a specific present
 	# Sample command line usage:
     # curl -i -X PUT -H "Content-Type: application/json" -d '{"Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/presents
-	def put(self, username):
-		if not request.json:
-			abort(400) # bad request
+	def put(self):
+		responce, responseCode, success = auth_route(session)
+		responce, responseCode, success = check_route_data(request)
+		if not success:
+			return make_response(jsonify(responce), responseCode)
 
 		id = request.json['Id']
 		id = int(id)
@@ -174,7 +171,7 @@ class presents(Resource):
 		sqlProc = 'updatePresentById'
 		sqlArgs = [id, title, link]
 		try:
-			row = db_access(sqlProc, sqlArgs)
+			db_access(sqlProc, sqlArgs)
 		except Exception as e:
 			abort(500, message = e) # server error
 		
@@ -189,13 +186,10 @@ class presents(Resource):
 
 		id = request.json['Id']
 		id = int(id)
-
-		#sqlProc = 'deletePresent'
-		#sqlArgs = [username, title]
 		sqlProc = 'deletePresentById'
 		sqlArgs = [id]
 		try:
-			row = db_access(sqlProc, sqlArgs)
+			db_access(sqlProc, sqlArgs)
 		except Exception as e:
 			abort(500, message = e) # server error
 		

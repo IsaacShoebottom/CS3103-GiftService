@@ -26,3 +26,26 @@ def db_access(sqlProc, sqlArgs):
         dbConnection.close()
 
     return rows
+
+def auth_route(session):
+    if 'username' in session:
+        response = {'status': 'success'}
+        responseCode = 200
+        success = True
+    else:
+        response = {'status': 'failure'}
+        responseCode = 403
+        success = False
+    return response, responseCode, success
+
+def check_route_data(request):
+    if not request.json:
+        response = {'status': 'failure'}
+        responseCode = 400
+        success = False
+    else:
+        response = {'status': 'success'}
+        responseCode = 200
+        success = True
+    return response, responseCode, success
+        
