@@ -12,19 +12,11 @@
 
 <body>
   <div class="container-xxl" id="app">
-    <div class="navbar navbar-expand-lg">
+    <div class="navbar">
       <a class="navbar-brand" href="/">Presents R Us</a>
-      <div class="collapse navbar-collapse">
-        <div class="navbar-nav active">
-          <a class="nav-link" @click="viewProfile()">Profile</a>
-        </div>
-        <div class="navbar-nav">
-          <a class="nav-link" @click="viewBrowse()">Browse</a>
-        </div>
-        <div class="navbar-nav">
-          <button v-if="loggedIn" class="btn btn-primary" @click="logout()">Logout</button>
-        </div>
-      </div>
+      <a class="navbar-text nav-link" @click="viewProfile()">Profile</a>
+      <a class="navbar-text nav-link" @click="viewBrowse()">Browse</a>
+      <button v-if="loggedIn" class="btn btn-primary" @click="logout()">Logout</button>
     </div>
     <div v-if="!loggedIn" class="input-group mb-3">
       <input class="form-control" placeholder="Username" type="text" v-model="username">

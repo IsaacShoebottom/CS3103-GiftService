@@ -136,7 +136,7 @@ class presents(Resource):
 	
 	# Sample command line usage:
     # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
-	def post(self):
+	def post(self, username):
 		responce, responseCode, success = auth_route(session)
 		responce, responseCode, success = check_route_data(request)
 		if not success:
@@ -157,7 +157,7 @@ class presents(Resource):
 	# PUT: Update a specific present
 	# Sample command line usage:
     # curl -i -X PUT -H "Content-Type: application/json" -d '{"Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/presents
-	def put(self):
+	def put(self, username):
 		responce, responseCode, success = auth_route(session)
 		responce, responseCode, success = check_route_data(request)
 		if not success:

@@ -21,7 +21,7 @@ createApp({
             })
                 .then(response => {
                     console.log(response.data)
-                    term.value = username.value
+                    username.value = response.data.username
                     loggedIn.value = true
 
                 })
@@ -29,7 +29,7 @@ createApp({
                     console.error(error)
                 })
                 if (view.value === 'profile') {
-                    search(term.value)
+                    search(username.value)
                 }
         }
 
@@ -52,7 +52,7 @@ createApp({
                 .then(response => {
                     console.log(response.data)
                     if (response.data.status === 'success') {
-                        term.value = response.data.username
+                        username.value = response.data.username
                         loggedIn.value = true
                     } else {
                         loggedIn.value = false
@@ -74,6 +74,7 @@ createApp({
                 .catch(error => {
                     console.error(error)
                 })
+            search(username.value)
         }
 
         async function editModal(id, index) {
@@ -96,7 +97,7 @@ createApp({
                 .catch(error => {
                     console.error(error)
                 })
-                search(term.value)
+            search(username.value)
         }
 
         async function remove(id) {
@@ -114,11 +115,11 @@ createApp({
                 .catch(error => {
                     console.error(error)
                 })
-                search(term.value)
+                search(username.value)
         }
 
         async function search(term) {
-            axios.get('/presents/' + term)
+            await axios.get('/presents/' + term)
                 .then(response => {
                     console.log(response.data)
                     presents.value = response.data.presents
@@ -131,21 +132,20 @@ createApp({
         async function viewProfile() {
             await status()
             if (loggedIn.value) {
-                await search(term.value)
+                await search(username.value)
                 view.value = 'profile'
             }
         }
 
         async function viewBrowse() {
             view.value = 'browse'
-            term.value = ''
             presents.value = []
         }
 
         onMounted(async () => {
             await status()
             if (loggedIn.value) {
-                search(term.value)
+                search(username.value)
             }
         })
 
