@@ -1,4 +1,4 @@
-const { createApp, ref } = Vue
+const { createApp, ref, onMounted } = Vue
 createApp({
     setup() {
         const term = ref('')
@@ -14,24 +14,27 @@ createApp({
         const loggedIn = ref(false)
         const view = ref('profile')
 
-        function login(username, password) {
-            axios.post('/auth/login', {
+        async function login(username, password) {
+            await axios.post('/auth/login', {
                 username: username,
                 password: password
             })
                 .then(response => {
                     console.log(response.data)
                     term.value = username.value
-                    search(username.value)
                     loggedIn.value = true
+
                 })
                 .catch(error => {
                     console.error(error)
                 })
+                if (view.value === 'profile') {
+                    search(term.value)
+                }
         }
 
-        function logout() {
-            axios.post('/auth/logout')
+        async function logout() {
+            await axios.post('/auth/logout')
                 .then(response => {
                     console.log(response.data)
                     loggedIn.value = false
@@ -39,10 +42,29 @@ createApp({
                 .catch(error => {
                     console.error(error)
                 })
+            if (view.value === 'profile') {
+                presents.value = []
+            }
         }
 
-        function add(name, link) {
-            axios.post('/presents/' + username.value, {
+        async function status() {
+            await axios.get('/auth/status')
+                .then(response => {
+                    console.log(response.data)
+                    if (response.data.status === 'success') {
+                        term.value = response.data.username
+                        loggedIn.value = true
+                    } else {
+                        loggedIn.value = false
+                    }
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        }
+
+        async function add(name, link) {
+            await axios.post('/presents/' + username.value, {
                 Title: name,
                 Link: link
             })
@@ -54,14 +76,14 @@ createApp({
                 })
         }
 
-        function editModal(id, index) {
+        async function editModal(id, index) {
             editMode.value = true
             editId.value = id
         }
 
-        function edit(id, name, link) {
+        async function edit(id, name, link) {
             console.log(id, name, link)
-            axios.put('/presents/' + username.value, {
+            await axios.put('/presents/' + username.value, {
                 Id: id,
                 Title: name,
                 Link: link
@@ -69,16 +91,17 @@ createApp({
                 .then(response => {
                     console.log(response.data)
                     editMode.value = false
-                    search(term.value)
+
                 })
                 .catch(error => {
                     console.error(error)
                 })
+                search(term.value)
         }
 
-        function remove(id) {
+        async function remove(id) {
             console.log(id)
-            axios.delete('/presents/' + username.value, {
+            await axios.delete('/presents/' + username.value, {
                 data: {
                     Id: id
                 }
@@ -86,14 +109,15 @@ createApp({
                 .then(response => {
                     console.log(response.data)
                     editMode.value = false
-                    search(term.value)
+
                 })
                 .catch(error => {
                     console.error(error)
                 })
+                search(term.value)
         }
 
-        function search(term) {
+        async function search(term) {
             axios.get('/presents/' + term)
                 .then(response => {
                     console.log(response.data)
@@ -104,6 +128,26 @@ createApp({
                 })
         }
 
+        async function viewProfile() {
+            await status()
+            if (loggedIn.value) {
+                await search(term.value)
+                view.value = 'profile'
+            }
+        }
+
+        async function viewBrowse() {
+            view.value = 'browse'
+            term.value = ''
+            presents.value = []
+        }
+
+        onMounted(async () => {
+            await status()
+            if (loggedIn.value) {
+                search(term.value)
+            }
+        })
 
         return {
             term,
@@ -121,10 +165,13 @@ createApp({
             editModal,
             search,
             logout,
+            status,
             add,
             edit,
             remove,
             login,
+            viewProfile,
+            viewBrowse
         }
     }
 }).mount('#app')

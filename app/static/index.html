@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <title>Welcome to Presents R Us</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
@@ -8,57 +9,62 @@
   <script type="module" src="/static/index.js"></script>
 </head>
 <html data-bs-theme="dark">
-  <body>
-    <div class="container-xxl" id="app">
-      <div class="navbar navbar-expand-lg">
-          <a class="navbar-brand" href="/">Presents R Us</a>
-          <div class="navbar-nav">
-            <a class="nav-link">Profile</a>
-            <a class="nav-link">View</a>
-          </div>
-          <div class="input-group">
-            <input class="form-control" placeholder="Username" type="text" v-model="username">
-            <input class="form-control" placeholder="Password" type="password" v-model="password">
-            <button v-if="loggedIn" class="btn btn-primary" @click="logout()">Logout</button>
-            <button v-else class="btn btn-primary" @click="login(username, password)">Login</button>
-          </div>
-      </div>
-      <div class="input-group">
-        <input class="form-control" placeholder="Search" type="text" v-model="term">
-        <button class="btn btn-primary" @click="search(term)">Search</button>
-      </div> 
-      <br>
-      <div class="input-group">
-        <input class="form-control" placeholder="Name" type="text" v-model="addName">
-        <input class="form-control" placeholder="Link" type="text" v-model="addLink">
-        <button class="btn btn-primary" @click="add(addName, addLink)">Add</button>
-      </div>
-      <br>
-      <div>
-        
-        
-        <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Edit</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tr v-for="(present, index) in presents">
-            <td>{{ index+1 }}</td>
-            <td><a :href="present.link">{{ present.title }}</a></td>
-            <td><button class="btn btn-primary " @click="editModal(present.presentId, index)">Edit</button></td>
-            <td><button class="btn btn-primary" @click="remove(present.presentId)">Delete</button></td>
-          </tr>
-        </table>
-      </div>
-      <div class="input-group" v-if="editMode">
-        <input class="form-control" type="text" placeholder="Name" v-model="editName">
-        <input class="form-control" type="text" placeholder="Link" v-model="editLink">
-        <button class="btn btn-primary" @click="edit(editId, editName, editLink)">Update</button>
+
+<body>
+  <div class="container-xxl" id="app">
+    <div class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="/">Presents R Us</a>
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav active">
+          <a class="nav-link" @click="viewProfile()">Profile</a>
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" @click="viewBrowse()">Browse</a>
+        </div>
+        <div class="navbar-nav">
+          <button v-if="loggedIn" class="btn btn-primary" @click="logout()">Logout</button>
+        </div>
       </div>
     </div>
-  </body>
+    <div v-if="!loggedIn" class="input-group mb-3">
+      <input class="form-control" placeholder="Username" type="text" v-model="username">
+      <input class="form-control" placeholder="Password" type="password" v-model="password">
+      <button class="btn btn-primary" @click="login(username, password)">Login</button>
+    </div>
+
+    <div v-if="view === 'browse'" class="input-group">
+      <input class="form-control" placeholder="Search" type="text" v-model="term">
+      <button class="btn btn-primary" @click="search(term)">Search</button>
+    </div>
+    <div v-if="view === 'profile'" class="input-group">
+      <input class="form-control" placeholder="Name" type="text" v-model="addName">
+      <input class="form-control" placeholder="Link" type="text" v-model="addLink">
+      <button class="btn btn-primary" @click="add(addName, addLink)">Add</button>
+    </div>
+    <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tr v-for="(present, index) in presents">
+          <td>{{ index+1 }}</td>
+          <td><a :href="present.link">{{ present.title }}</a></td>
+          <td><button class="btn btn-primary " @click="editModal(present.presentId, index)">Edit</button></td>
+          <td><button class="btn btn-primary" @click="remove(present.presentId)">Delete</button></td>
+        </tr>
+      </table>
+    </div>
+    <div class="input-group" v-if="editMode">
+      <input class="form-control" type="text" placeholder="Name" v-model="editName">
+      <input class="form-control" type="text" placeholder="Link" v-model="editLink">
+      <button class="btn btn-primary" @click="edit(editId, editName, editLink)">Update</button>
+    </div>
+  </div>
+</body>
+
 </html>
