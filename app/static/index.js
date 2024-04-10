@@ -10,12 +10,12 @@ createApp({
         const term = ref('')
         const presents = ref([])
         const view = ref(views.profile)
+        const modal = ref(null)
         // Reactive data
         const editData = reactive({
             id: -1,
             title: '',
             link: '',
-            mode: false
         })
         const addData = reactive({
             title: '',
@@ -88,9 +88,14 @@ createApp({
             await search(userData.username)
         }
 
-        async function editModal(id) {
-            editData.mode = true
+        async function openModal(id) {
             editData.id = id
+            modal.value.show()
+        }
+
+        async function closeModal() {
+            editData.id = -1
+            modal.value.hide()
         }
 
         async function edit() {
@@ -102,12 +107,12 @@ createApp({
             })
                 .then(response => {
                     console.log(response.data)
-                    editData.mode = false
                 })
                 .catch(error => {
                     console.error(error)
                 })
             await search(userData.username)
+            modal.value.hide()
         }
 
         async function remove(id) {
@@ -157,6 +162,7 @@ createApp({
             if (userData.loggedIn) {
                 await search(userData.username)
             }
+            modal.value = new bootstrap.Modal(document.getElementById('modal'))
         })
 
         return {
@@ -167,7 +173,7 @@ createApp({
             userData,
             editData,
             addData,
-            editModal,
+            modal,
             search,
             logout,
             status,
@@ -176,7 +182,9 @@ createApp({
             remove,
             login,
             viewProfile,
-            viewBrowse
+            viewBrowse,
+            openModal,
+            closeModal
         }
     }
 }).mount('#app')
