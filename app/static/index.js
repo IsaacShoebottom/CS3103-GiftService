@@ -10,7 +10,8 @@ createApp({
         const term = ref('')
         const presents = ref([])
         const view = ref(views.browse)
-        const modal = ref(null)
+        const editModal = ref(null)
+        const loginModal = ref(null)
         // Reactive data
         const editData = reactive({
             id: -1,
@@ -31,15 +32,14 @@ createApp({
             await axios.post('/auth/login', {
                 username: userData.username,
                 password: userData.password
-            }).then(async () => {
+            }).then(() => {
                 userData.loggedIn = true
-                if (view.value === views.profile) {
-                    await search(userData.username)
-                }
             }).catch(error => {
                 console.error(error.response)
             })
             userData.password = ''
+            loginModal.value.hide()
+            await viewProfile()
         }
 
         async function logout() {
@@ -53,6 +53,7 @@ createApp({
             if (view.value === 'profile') {
                 presents.value = []
             }
+            await viewBrowse()
         }
 
         async function status() {
@@ -68,6 +69,7 @@ createApp({
         }
 
         async function add() {
+            console.log(addData)
             await axios.post('/presents/' + userData.username, {
                 title: addData.title,
                 link: addData.link
@@ -77,26 +79,16 @@ createApp({
             await search(userData.username)
         }
 
-        async function openModal(id) {
-            editData.id = id
-            modal.value.show()
-        }
-
-        async function closeModal() {
-            editData.id = -1
-            modal.value.hide()
-        }
-
         async function edit() {
             await axios.put('/presents/' + userData.username, {
                 id: editData.id,
-                title: editData.name,
+                title: editData.title,
                 link: editData.link
             }).catch(error => {
                 console.error(error.response)
             })
             await search(userData.username)
-            modal.value.hide()
+            editModal.value.hide()
         }
 
         async function remove(id) {
@@ -135,12 +127,32 @@ createApp({
             presents.value = []
         }
 
+        async function openEditModal(id, title, link) {
+            editData.id = id
+            editData.title = title
+            editData.link = link
+            editModal.value.show()
+        }
+
+        async function closeEditModal() {
+            editData.id = -1
+            editData.title = ''
+            editData.link = ''
+            editModal.value.hide()
+        }
+
+        async function openLoginModal() {
+            loginModal.value.show()
+        }
+
+        async function closeLoginModal() {
+            loginModal.value.hide()
+        }
+
         onMounted(async () => {
-            await status()
-            if (userData.loggedIn) {
-                await search(userData.username)
-            }
-            modal.value = new bootstrap.Modal(document.getElementById('modal'))
+            await viewProfile()
+            editModal.value = new bootstrap.Modal(document.getElementById('edit-modal'))
+            loginModal.value = new bootstrap.Modal(document.getElementById('login-modal'))
         })
 
         return {
@@ -151,7 +163,8 @@ createApp({
             userData,
             editData,
             addData,
-            modal,
+            editModal,
+            loginModal,
             search,
             logout,
             status,
@@ -161,8 +174,10 @@ createApp({
             login,
             viewProfile,
             viewBrowse,
-            openModal,
-            closeModal
+            openEditModal,
+            closeEditModal,
+            openLoginModal,
+            closeLoginModal
         }
     }
 }).mount('#app')

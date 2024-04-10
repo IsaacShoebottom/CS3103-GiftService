@@ -4,63 +4,92 @@
   <title>Welcome to Presents R Us</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <script type="module" src="/static/index.js"></script>
 </head>
 <html data-bs-theme="dark">
 
 <body>
-  <div class="container-xxl" id="app">
-    <!-- Modal -->
-    <div class="modal fade" id="modal">
+  <div class="container-fluid" id="app">
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit-modal">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h6 class="modal-title">Edit Present</h5>
-              <button type="button" class="btn-close" @click="closeModal()"></button>
+              <button type="button" class="btn-close" @click="closeEditModal()"></button>
           </div>
           <div class="modal-body">
             <div class="input-group">
-              <input class="form-control" type="text" placeholder="Name" v-model="editData.name">
+              <input class="form-control" type="text" placeholder="Title" v-model="editData.title">
               <input class="form-control" type="text" placeholder="Link" v-model="editData.link">
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" @click="closeModal()">Close</button>
+            <button class="btn btn-secondary" @click="closeEditModal()">Close</button>
             <button class="btn btn-success" @click="edit()">Update</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- Navbar -->
-    <div class="navbar">
-      <!-- Horrible abuse of navbar-nav. Should make profile and browse collapseable but thats more work -->
-      <div class="navbar-nav">
-        <a class="navbar-brand" href="#">Presents R Us</a>
-      </div>
-      <div>
-        <a class="nav-link" href="#" :class="{active: view === views.browse}" @click="viewBrowse()">Browse</a>
-      </div>
-      <div class="navbar-nav">
-        <a class="nav-link" href="#" :class="{active: view === views.profile, disabled: !userData.loggedIn }" @click="viewProfile()">Profile</a>
-      </div>
-      <div v-if="userData.loggedIn" class="navbar-nav">
-        <div class="nav-item">
-          Logged in as {{ userData.username }}
-          <button class="btn btn-primary" @click="logout()">Logout</button>
+    <!-- Login Modal -->
+    <div class="modal fade" id="login-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Login</h5>
+              <button type="button" class="btn-close" @click="closeLoginModal()"></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group">
+              <input class="form-control" placeholder="Username" type="text" v-model="userData.username">
+              <input class="form-control" placeholder="Password" type="password" v-model="userData.password">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" @click="closeLoginModal()">Close</button>
+            <button class="btn btn-success" @click="login()">Login</button>
+          </div>
         </div>
       </div>
     </div>
-    <!-- Login section -->
+
+    <!-- Navbar -->
+    <div class="navbar navbar-expand-sm">
+      <!-- Horrible abuse of navbar-nav. Should make profile and browse collapseable but thats more work -->
+      <a class="navbar-brand" href="#">Presents R Us</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" :class="{active: view === views.browse}" @click="viewBrowse()">Browse</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" :class="{active: view === views.profile, disabled: !userData.loggedIn }"
+              @click="viewProfile()">Profile</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              User
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li v-if="!userData.loggedIn"><a class="dropdown-item" href="#" @click="openLoginModal()">Login</a></li>
+              <li v-if="userData.loggedIn"><span class="dropdown-item">{{ userData.username }}</span></li>
+              <li v-if="userData.loggedIn"><a class="dropdown-item" href="#" @click="logout()">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Login alert -->
     <div v-if="!userData.loggedIn" class="alert alert-light alert-dismissible">
       You are not logged in. You can still browse presents but you need to log in to add or edit presents.
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    <div v-if="!userData.loggedIn" class="input-group mb-3">
-      <input class="form-control" placeholder="Username" type="text" v-model="userData.username">
-      <input class="form-control" placeholder="Password" type="password" v-model="userData.password">
-      <button class="btn btn-primary" @click="login()">Login</button>
     </div>
 
     <!-- Inputs for profile and browse tabs -->
@@ -69,7 +98,7 @@
       <button class="btn btn-secondary" @click="search(term)">Search</button>
     </div>
     <div v-if="view === views.profile && userData.loggedIn" class="input-group">
-      <input class="form-control" placeholder="Name" type="text" v-model="addData.name">
+      <input class="form-control" placeholder="Title" type="text" v-model="addData.title">
       <input class="form-control" placeholder="Link" type="text" v-model="addData.link">
       <button class="btn btn-secondary" @click="add()">Add</button>
     </div>
@@ -88,7 +117,7 @@
           <td>{{ index+1 }}</td>
           <td class="w-100"><a :href="present.link">{{ present.title }}</a></td>
           <td v-if="view === views.profile"><button class="btn btn-warning btn-sm"
-              @click="openModal(present.presentId)">Edit</button></td>
+              @click="openEditModal(present.presentId, present.title, present.link)">Edit</button></td>
           <td v-if="view === views.profile"><button class="btn btn-danger btn-sm"
               @click="remove(present.presentId)">Delete</button></td>
         </tr>
