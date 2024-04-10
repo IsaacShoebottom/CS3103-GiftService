@@ -28,32 +28,27 @@ createApp({
         })
 
         async function login() {
-            console.log(userData)
             await axios.post('/auth/login', {
                 username: userData.username,
                 password: userData.password
             }).then(async response => {
-                console.log(response.data)
                 userData.loggedIn = true
                 if (view.value === views.profile) {
                     await search(userData.username)
                 }
             }).catch(error => {
-                console.error(error)
+                console.error(error.response)
             })
-            console.log(userData)
-            console.log(view.value)
             userData.password = ''
         }
 
         async function logout() {
             await axios.post('/auth/logout')
                 .then(response => {
-                    console.log(response.data)
                     userData.loggedIn = false
                 })
                 .catch(error => {
-                    console.error(error)
+                    console.error(error.response)
                 })
             if (view.value === 'profile') {
                 presents.value = []
@@ -63,28 +58,22 @@ createApp({
         async function status() {
             await axios.get('/auth/status')
                 .then(response => {
-                    console.log("Auth status: ", response.data)
                     userData.username = response.data.username
                     userData.loggedIn = true
                 })
                 .catch(error => {
-                    console.log("Auth status: ", error.response.data)
+                    console.log(error.response)
                     userData.loggedIn = false
                 })
         }
 
         async function add() {
-            console.log(addData)
             await axios.post('/presents/' + userData.username, {
                 title: addData.title,
                 link: addData.link
+            }).catch(error => {
+                console.error(error.response)
             })
-                .then(response => {
-                    console.log(response.data)
-                })
-                .catch(error => {
-                    console.error(error)
-                })
             await search(userData.username)
         }
 
@@ -99,48 +88,37 @@ createApp({
         }
 
         async function edit() {
-            console.log(editData)
             await axios.put('/presents/' + userData.username, {
                 id: editData.id,
                 title: editData.name,
                 link: editData.link
+            }).catch(error => {
+                console.error(error.response)
             })
-                .then(response => {
-                    console.log(response.data)
-                })
-                .catch(error => {
-                    console.error(error)
-                })
             await search(userData.username)
             modal.value.hide()
         }
 
         async function remove(id) {
-            console.log(id)
             await axios.delete('/presents/' + userData.username, {
                 data: {
                     id: id
                 }
+            }).then(() => {
+                editData.value = false
+            }).catch(error => {
+                console.error(error.data)
             })
-                .then(response => {
-                    console.log(response.data)
-                    editData.value = false
-
-                })
-                .catch(error => {
-                    console.error(error)
-                })
             search(userData.username)
         }
 
         async function search(term) {
             await axios.get('/presents/' + term)
                 .then(response => {
-                    console.log(response.data)
                     presents.value = response.data.presents
                 })
                 .catch(error => {
-                    console.error(error)
+                    console.error(error.response)
                 })
         }
 
