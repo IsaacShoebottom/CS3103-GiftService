@@ -12,6 +12,7 @@
 
 <body>
   <div class="container-xxl" id="app">
+    <!-- Modal -->
     <div class="modal fade" id="modal">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -32,20 +33,29 @@
         </div>
       </div>
     </div>
+    <!-- Navbar -->
     <div class="navbar">
       <!-- Horrible abuse of navbar-nav. Should make profile and browse collapseable but thats more work -->
       <div class="navbar-nav">
         <a class="navbar-brand" href="#">Presents R Us</a>
       </div>
-      <div class="navbar-nav">
-        <a class="nav-link" href="#" :class="{ active: view === views.profile}" @click="viewProfile()">Profile</a>
-      </div>
       <div>
-        <a class="nav-link" href="#" :class="{ active: view === views.browse}" @click="viewBrowse()">Browse</a>
+        <a class="nav-link" href="#" :class="{active: view === views.browse}" @click="viewBrowse()">Browse</a>
       </div>
       <div class="navbar-nav">
-        <button v-if="userData.loggedIn" class="nav-item btn btn-primary" @click="logout()">Logout</button>
+        <a class="nav-link" href="#" :class="{active: view === views.profile, disabled: !userData.loggedIn }" @click="viewProfile()">Profile</a>
       </div>
+      <div v-if="userData.loggedIn" class="navbar-nav">
+        <div class="nav-item">
+          Logged in as {{ userData.username }}
+          <button class="btn btn-primary" @click="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+    <!-- Login section -->
+    <div v-if="!userData.loggedIn" class="alert alert-light alert-dismissible">
+      You are not logged in. You can still browse presents but you need to log in to add or edit presents.
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <div v-if="!userData.loggedIn" class="input-group mb-3">
       <input class="form-control" placeholder="Username" type="text" v-model="userData.username">
@@ -53,15 +63,17 @@
       <button class="btn btn-primary" @click="login()">Login</button>
     </div>
 
+    <!-- Inputs for profile and browse tabs -->
     <div v-if="view === views.browse" class="input-group">
       <input class="form-control" placeholder="Search" type="text" v-model="term">
       <button class="btn btn-secondary" @click="search(term)">Search</button>
     </div>
-    <div v-if="view === views.profile" class="input-group">
+    <div v-if="view === views.profile && userData.loggedIn" class="input-group">
       <input class="form-control" placeholder="Name" type="text" v-model="addData.name">
       <input class="form-control" placeholder="Link" type="text" v-model="addData.link">
       <button class="btn btn-secondary" @click="add()">Add</button>
     </div>
+    <!-- Presents table -->
     <div v-if="presents.length !== 0">
       <table class="table table-hover">
         <thead>

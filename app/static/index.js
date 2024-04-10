@@ -9,7 +9,7 @@ createApp({
         // Reactive variables
         const term = ref('')
         const presents = ref([])
-        const view = ref(views.profile)
+        const view = ref(views.browse)
         const modal = ref(null)
         // Reactive data
         const editData = reactive({
@@ -31,7 +31,7 @@ createApp({
             await axios.post('/auth/login', {
                 username: userData.username,
                 password: userData.password
-            }).then(async response => {
+            }).then(async () => {
                 userData.loggedIn = true
                 if (view.value === views.profile) {
                     await search(userData.username)
@@ -44,7 +44,7 @@ createApp({
 
         async function logout() {
             await axios.post('/auth/logout')
-                .then(response => {
+                .then(() => {
                     userData.loggedIn = false
                 })
                 .catch(error => {
