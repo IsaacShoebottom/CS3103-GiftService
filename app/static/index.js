@@ -1,43 +1,56 @@
-const { createApp, ref, onMounted } = Vue
+const { createApp, ref, reactive, onMounted } = Vue
 createApp({
     setup() {
+        // Enum for views
+        const views = Object.freeze({
+            profile: 'profile',
+            browse: 'browse'
+        })
+        // Reactive variables
         const term = ref('')
-        const username = ref('')
-        const password = ref('')
-        const addName = ref('')
-        const addLink = ref('')
         const presents = ref([])
-        const editMode = ref(false)
-        const editId = ref(-1)
-        const editName = ref('')
-        const editLink = ref('')
-        const loggedIn = ref(false)
-        const view = ref('profile')
+        const view = ref(views.profile)
+        // Reactive data
+        const editData = reactive({
+            id: -1,
+            title: '',
+            link: '',
+            mode: false
+        })
+        const addData = reactive({
+            title: '',
+            link: ''
+        })
+        const userData = reactive({
+            username: '',
+            password: '',
+            loggedIn: false
+        })
 
-        async function login(username, password) {
+        async function login() {
+            console.log(userData)
             await axios.post('/auth/login', {
-                username: username,
-                password: password
-            })
-                .then(response => {
-                    console.log(response.data)
-                    username.value = response.data.username
-                    loggedIn.value = true
-
-                })
-                .catch(error => {
-                    console.error(error)
-                })
-                if (view.value === 'profile') {
-                    search(username.value)
+                username: userData.username,
+                password: userData.password
+            }).then(async response => {
+                console.log(response.data)
+                userData.loggedIn = true
+                if (view.value === views.profile) {
+                    await search(userData.username)
                 }
+            }).catch(error => {
+                console.error(error)
+            })
+            console.log(userData)
+            console.log(view.value)
+            userData.password = ''
         }
 
         async function logout() {
             await axios.post('/auth/logout')
                 .then(response => {
                     console.log(response.data)
-                    loggedIn.value = false
+                    userData.loggedIn = false
                 })
                 .catch(error => {
                     console.error(error)
@@ -50,23 +63,21 @@ createApp({
         async function status() {
             await axios.get('/auth/status')
                 .then(response => {
-                    console.log(response.data)
-                    if (response.data.status === 'success') {
-                        username.value = response.data.username
-                        loggedIn.value = true
-                    } else {
-                        loggedIn.value = false
-                    }
+                    console.log("Auth status: ", response.data)
+                    userData.username = response.data.username
+                    userData.loggedIn = true
                 })
                 .catch(error => {
-                    console.error(error)
+                    console.log("Auth status: ", error.response.data)
+                    userData.loggedIn = false
                 })
         }
 
-        async function add(name, link) {
-            await axios.post('/presents/' + username.value, {
-                Title: name,
-                Link: link
+        async function add() {
+            console.log(addData)
+            await axios.post('/presents/' + userData.username, {
+                title: addData.title,
+                link: addData.link
             })
                 .then(response => {
                     console.log(response.data)
@@ -74,48 +85,47 @@ createApp({
                 .catch(error => {
                     console.error(error)
                 })
-            search(username.value)
+            await search(userData.username)
         }
 
-        async function editModal(id, index) {
-            editMode.value = true
-            editId.value = id
+        async function editModal(id) {
+            editData.mode = true
+            editData.id = id
         }
 
-        async function edit(id, name, link) {
-            console.log(id, name, link)
-            await axios.put('/presents/' + username.value, {
-                Id: id,
-                Title: name,
-                Link: link
+        async function edit() {
+            console.log(editData)
+            await axios.put('/presents/' + userData.username, {
+                id: editData.id,
+                title: editData.name,
+                link: editData.link
             })
                 .then(response => {
                     console.log(response.data)
-                    editMode.value = false
-
+                    editData.mode = false
                 })
                 .catch(error => {
                     console.error(error)
                 })
-            search(username.value)
+            await search(userData.username)
         }
 
         async function remove(id) {
             console.log(id)
-            await axios.delete('/presents/' + username.value, {
+            await axios.delete('/presents/' + userData.username, {
                 data: {
-                    Id: id
+                    id: id
                 }
             })
                 .then(response => {
                     console.log(response.data)
-                    editMode.value = false
+                    editData.value = false
 
                 })
                 .catch(error => {
                     console.error(error)
                 })
-                search(username.value)
+            search(userData.username)
         }
 
         async function search(term) {
@@ -131,37 +141,32 @@ createApp({
 
         async function viewProfile() {
             await status()
-            if (loggedIn.value) {
-                await search(username.value)
-                view.value = 'profile'
+            if (userData.loggedIn) {
+                await search(userData.username)
+                view.value = views.profile
             }
         }
 
         async function viewBrowse() {
-            view.value = 'browse'
+            view.value = views.browse
             presents.value = []
         }
 
         onMounted(async () => {
             await status()
-            if (loggedIn.value) {
-                search(username.value)
+            if (userData.loggedIn) {
+                await search(userData.username)
             }
         })
 
         return {
             term,
-            username,
-            password,
-            addName,
-            addLink,
             presents,
-            editId,
-            editName,
-            editLink,
-            editMode,
-            loggedIn,
+            views,
             view,
+            userData,
+            editData,
+            addData,
             editModal,
             search,
             logout,

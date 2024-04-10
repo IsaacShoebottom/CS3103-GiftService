@@ -81,7 +81,7 @@ class auth(Resource):
 				response = {'status': 'success' }
 				responseCode = 201
 			except (LDAPException):
-				response = {'status': 'Access denied'}
+				response = {'status': 'access denied'}
 				responseCode = 403
 			finally:
 				ldapConnection.unbind()
@@ -142,8 +142,8 @@ class presents(Resource):
 		if not success:
 			return make_response(jsonify(responce), responseCode)
 
-		title = request.json['Title']
-		link = request.json['Link']
+		title = request.json['title']
+		link = request.json['link']
 
 		sqlProc = 'createPresent'
 		sqlArgs = [username, title, link]
@@ -163,10 +163,10 @@ class presents(Resource):
 		if not success:
 			return make_response(jsonify(responce), responseCode)
 
-		id = request.json['Id']
+		id = request.json['id']
 		id = int(id)
-		title = request.json['Title']
-		link = request.json['Link']
+		title = request.json['title']
+		link = request.json['link']
 
 		sqlProc = 'updatePresentById'
 		sqlArgs = [id, title, link]
@@ -184,7 +184,7 @@ class presents(Resource):
 		if not request.json:
 			abort(400) # bad request
 
-		id = request.json['Id']
+		id = request.json['id']
 		id = int(id)
 		sqlProc = 'deletePresentById'
 		sqlArgs = [id]

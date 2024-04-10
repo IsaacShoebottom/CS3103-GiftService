@@ -13,48 +13,57 @@
 <body>
   <div class="container-xxl" id="app">
     <div class="navbar">
-      <a class="navbar-brand nav-item" href="/">Presents R Us</a>
-      <a class="navbar-nav nav-item nav-link" :class="{ active: view === 'profile'}" @click="viewProfile()">Profile</a>
-      <a class="navbar-nav nav-item nav-link" :class="{ active: view === 'browse'}" @click="viewBrowse()">Browse</a>
-      <button v-if="loggedIn" class="nav-item btn btn-primary" @click="logout()">Logout</button>
+      <!-- Horrible abuse of navbar-nav. Should make profile and browse collapseable but thats more work -->
+      <div class="navbar-nav">
+        <a class="navbar-brand" href="#">Presents R Us</a>
+      </div>
+      <div class="navbar-nav">
+        <a class="nav-link" href="#" :class="{ active: view === views.profile}" @click="viewProfile()">Profile</a>
+      </div>
+      <div>
+        <a class="nav-link" href="#" :class="{ active: view === views.browse}" @click="viewBrowse()">Browse</a>
+      </div>
+      <div class="navbar-nav">
+        <button v-if="userData.loggedIn" class="nav-item btn btn-primary" @click="logout()">Logout</button>
+      </div>
     </div>
-    <div v-if="!loggedIn" class="input-group mb-3">
-      <input class="form-control" placeholder="Username" type="text" v-model="username">
-      <input class="form-control" placeholder="Password" type="password" v-model="password">
-      <button class="btn btn-primary" @click="login(username, password)">Login</button>
+    <div v-if="!userData.loggedIn" class="input-group mb-3">
+      <input class="form-control" placeholder="Username" type="text" v-model="userData.username">
+      <input class="form-control" placeholder="Password" type="password" v-model="userData.password">
+      <button class="btn btn-primary" @click="login()">Login</button>
     </div>
 
-    <div v-if="view === 'browse'" class="input-group">
+    <div v-if="view === views.browse" class="input-group">
       <input class="form-control" placeholder="Search" type="text" v-model="term">
       <button class="btn btn-primary" @click="search(term)">Search</button>
     </div>
-    <div v-if="view === 'profile'" class="input-group">
-      <input class="form-control" placeholder="Name" type="text" v-model="addName">
-      <input class="form-control" placeholder="Link" type="text" v-model="addLink">
-      <button class="btn btn-primary" @click="add(addName, addLink)">Add</button>
+    <div v-if="view === views.profile" class="input-group">
+      <input class="form-control" placeholder="Name" type="text" v-model="addData.name">
+      <input class="form-control" placeholder="Link" type="text" v-model="addData.link">
+      <button class="btn btn-primary" @click="add()">Add</button>
     </div>
     <div>
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
+            <th class="w-100">Name</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tr v-for="(present, index) in presents">
           <td>{{ index+1 }}</td>
-          <td><a :href="present.link">{{ present.title }}</a></td>
-          <td><button class="btn btn-primary " @click="editModal(present.presentId, index)">Edit</button></td>
+          <td class="w-100"><a :href="present.link">{{ present.title }}</a></td>
+          <td><button class="btn btn-primary" @click="editModal(present.presentId, index)">Edit</button></td>
           <td><button class="btn btn-primary" @click="remove(present.presentId)">Delete</button></td>
         </tr>
       </table>
     </div>
-    <div class="input-group" v-if="editMode">
-      <input class="form-control" type="text" placeholder="Name" v-model="editName">
-      <input class="form-control" type="text" placeholder="Link" v-model="editLink">
-      <button class="btn btn-primary" @click="edit(editId, editName, editLink)">Update</button>
+    <div class="input-group" v-if="editData.mode">
+      <input class="form-control" type="text" placeholder="Name" v-model="editData.name">
+      <input class="form-control" type="text" placeholder="Link" v-model="editData.link">
+      <button class="btn btn-primary" @click="edit()">Update</button>
     </div>
   </div>
 </body>
