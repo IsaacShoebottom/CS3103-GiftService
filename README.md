@@ -8,6 +8,7 @@
 "api" holds all the API documentation
 
 # How to run
+Sometimes Vue fails to mount, or fails to run JavaScript. If the app is not behaving correctly please refresh 1-2 times. I do not know what the problem is and works 99% of the time otherwise
 ```sh
 # Start the app: ./run.sh
 ./run.sh
