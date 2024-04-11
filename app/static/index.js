@@ -76,6 +76,7 @@ createApp({
         }
 
         async function add() {
+            // Validate input
             let failed = false
             if (addData.title === '' || addData.link === '') {
                 error.value = 'Please fill out all fields'
@@ -85,6 +86,7 @@ createApp({
                 error.value = 'Please enter a valid URL'
                 return
             }
+            // Request to add present
             await axios.post('/presents/' + userData.username, {
                 title: addData.title,
                 link: addData.link
@@ -94,6 +96,9 @@ createApp({
             })
             if (failed) {
                 error.value = 'Failed to add present'
+            } else {
+                addData.title = ''
+                addData.link = ''
             }
             await search(userData.username)
         }
