@@ -21,7 +21,7 @@ cd app/
 When logging in, you are automatically registered to our service, and can begin creating presents
 
 # Searching
-When searching, change to the browse tab and key in a name. To view how another user looks, key in "ishoebot" to view an example profile
+When searching, change to the browse tab and key in a name. To view how another user looks, search "ishoebot" or "bfanjoy" on the browse tab to view an example profile
 
 # Test Cases with CURL
 ```sh
