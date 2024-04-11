@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API for managing presents for users
 servers:
-  - url: http://cs3103.cs.unb.ca:8033
+  - url: http://cs3103.cs.unb.ca:8034
 paths:
   /:
     get:
@@ -12,12 +12,6 @@ paths:
       responses:
         '200':
           description: Index page returned successfully
-  /dev:
-    get:
-      summary: Get developer page
-      responses:
-        '200':
-          description: Developer page returned successfully
   /auth/login:
     post:
       summary: Log the user into the authentication endpoint
@@ -35,7 +29,7 @@ paths:
       responses:
         '200':
           description: Authentication successful
-        '401':
+        '403':
           description: Authentication failed
   /auth/status:
     get:
@@ -43,92 +37,16 @@ paths:
       responses:
         '200':
           description: User is logged in
-        '401':
+        '403':
           description: User is not logged in
   /auth/logout:
     post:
       summary: Unlog the user from the authentication endpoint
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
       responses:
         '200':
           description: User has been logged out
-        '401':
-          description: User not found
-  /user:
-    post:
-      summary: Create a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Username:
-                  type: string
-      responses:
-        '201':
-          description: User created successfully
-        '400':
-          description: Bad request
-  /present:
-    post:
-      summary: Create a new present
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Username:
-                  type: string
-                Title:
-                  type: string
-                Link:
-                  type: string
-      responses:
-        '201':
-          description: Present created successfully
-        '400':
-          description: Bad request
-    put:
-      summary: Update a present
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Username:
-                  type: string
-                Title:
-                  type: string
-                nTitle:
-                  type: string
-                nLink:
-                  type: string
-      responses:
-        '204':
-          description: Present updated successfully
-        '400':
-          description: Bad request
-    delete:
-      summary: Delete a present
-      responses:
-        '204':
-          description: Present deleted successfully
-        '400':
-          description: Bad request
+        '403':
+          description: User failed to log out
   /presents/{username}:
     get:
       summary: Retrieve all presents for a specific username
@@ -146,3 +64,48 @@ paths:
           description: Bad request
         '404':
           description: Resource not found
+    post:
+      summary: Create a new present
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                link:
+                  type: string
+      responses:
+        '201':
+          description: Present created successfully
+        '400':
+          description: Bad request
+    put:
+      summary: Update a present
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                title:
+                  type: string
+                link:
+                  type: string
+      responses:
+        '204':
+          description: Present updated successfully
+        '400':
+          description: Bad request
+    delete:
+      summary: Delete a present
+      responses:
+        '204':
+          description: Present deleted successfully
+        '400':
+          description: Bad request
