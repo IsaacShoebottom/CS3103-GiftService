@@ -104,6 +104,15 @@ paths:
           description: Bad request
     delete:
       summary: Delete a present
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
       responses:
         '204':
           description: Present deleted successfully

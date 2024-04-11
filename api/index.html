@@ -198,13 +198,11 @@
   <li><a href="#authLoginPost"><code><span class="http-method">post</span> /auth/login</code></a></li>
   <li><a href="#authLogoutPost"><code><span class="http-method">post</span> /auth/logout</code></a></li>
   <li><a href="#authStatusGet"><code><span class="http-method">get</span> /auth/status</code></a></li>
-  <li><a href="#devGet"><code><span class="http-method">get</span> /dev</code></a></li>
-  <li><a href="#presentDelete"><code><span class="http-method">delete</span> /present</code></a></li>
-  <li><a href="#presentPost"><code><span class="http-method">post</span> /present</code></a></li>
-  <li><a href="#presentPut"><code><span class="http-method">put</span> /present</code></a></li>
+  <li><a href="#presentsUsernameDelete"><code><span class="http-method">delete</span> /presents/{username}</code></a></li>
   <li><a href="#presentsUsernameGet"><code><span class="http-method">get</span> /presents/{username}</code></a></li>
+  <li><a href="#presentsUsernamePost"><code><span class="http-method">post</span> /presents/{username}</code></a></li>
+  <li><a href="#presentsUsernamePut"><code><span class="http-method">put</span> /presents/{username}</code></a></li>
   <li><a href="#rootGet"><code><span class="http-method">get</span> /</code></a></li>
-  <li><a href="#userPost"><code><span class="http-method">post</span> /user</code></a></li>
   </ul>
 
   <h1><a name="Default">Default</a></h1>
@@ -241,7 +239,7 @@
     <h4 class="field-label">200</h4>
     Authentication successful
         <a href="#"></a>
-    <h4 class="field-label">401</h4>
+    <h4 class="field-label">403</h4>
     Authentication failed
         <a href="#"></a>
   </div> <!-- method -->
@@ -254,18 +252,7 @@
     <div class="method-notes"></div>
 
 
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
 
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">body <a href="#auth_logout_body">auth_logout_body</a> (required)</div>
-      
-            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-                </div>  <!-- field-items -->
 
 
 
@@ -279,8 +266,8 @@
     <h4 class="field-label">200</h4>
     User has been logged out
         <a href="#"></a>
-    <h4 class="field-label">401</h4>
-    User not found
+    <h4 class="field-label">403</h4>
+    User failed to log out
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
@@ -306,44 +293,31 @@
     <h4 class="field-label">200</h4>
     User is logged in
         <a href="#"></a>
-    <h4 class="field-label">401</h4>
+    <h4 class="field-label">403</h4>
     User is not logged in
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="devGet"></a>
+  <div class="method"><a name="presentsUsernameDelete"></a>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /dev</code></pre></div>
-    <div class="method-summary">Get developer page (<span class="nickname">devGet</span>)</div>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /presents/{username}</code></pre></div>
+    <div class="method-summary">Delete a present (<span class="nickname">presentsUsernameDelete</span>)</div>
     <div class="method-notes"></div>
 
 
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
 
-
-
-
-
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">200</h4>
-    Developer page returned successfully
-        <a href="#"></a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="presentDelete"></a>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /present</code></pre></div>
-    <div class="method-summary">Delete a present (<span class="nickname">presentDelete</span>)</div>
-    <div class="method-notes"></div>
-
-
-
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#presents_username_body_2">presents_username_body_2</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
 
 
 
@@ -356,82 +330,6 @@
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">204</h4>
     Present deleted successfully
-        <a href="#"></a>
-    <h4 class="field-label">400</h4>
-    Bad request
-        <a href="#"></a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="presentPost"></a>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /present</code></pre></div>
-    <div class="method-summary">Create a new present (<span class="nickname">presentPost</span>)</div>
-    <div class="method-notes"></div>
-
-
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">body <a href="#present_body_1">present_body_1</a> (required)</div>
-      
-            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-                </div>  <!-- field-items -->
-
-
-
-
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">201</h4>
-    Present created successfully
-        <a href="#"></a>
-    <h4 class="field-label">400</h4>
-    Bad request
-        <a href="#"></a>
-  </div> <!-- method -->
-  <hr/>
-  <div class="method"><a name="presentPut"></a>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="put"><code class="huge"><span class="http-method">put</span> /present</code></pre></div>
-    <div class="method-summary">Update a present (<span class="nickname">presentPut</span>)</div>
-    <div class="method-notes"></div>
-
-
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">body <a href="#present_body">present_body</a> (required)</div>
-      
-            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-                </div>  <!-- field-items -->
-
-
-
-
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">204</h4>
-    Present updated successfully
         <a href="#"></a>
     <h4 class="field-label">400</h4>
     Bad request
@@ -473,6 +371,82 @@
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="presentsUsernamePost"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /presents/{username}</code></pre></div>
+    <div class="method-summary">Create a new present (<span class="nickname">presentsUsernamePost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#presents_username_body_1">presents_username_body_1</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Present created successfully
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Bad request
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="presentsUsernamePut"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /presents/{username}</code></pre></div>
+    <div class="method-summary">Update a present (<span class="nickname">presentsUsernamePut</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#presents_username_body">presents_username_body</a> (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">204</h4>
+    Present updated successfully
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Bad request
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="rootGet"></a>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -497,44 +471,6 @@
         <a href="#"></a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="userPost"></a>
-    <div class="method-path">
-    <a class="up" href="#__Methods">Up</a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /user</code></pre></div>
-    <div class="method-summary">Create a new user (<span class="nickname">userPost</span>)</div>
-    <div class="method-notes"></div>
-
-
-    <h3 class="field-label">Consumes</h3>
-    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
-    <ul>
-      <li><code>application/json</code></li>
-    </ul>
-
-    <h3 class="field-label">Request body</h3>
-    <div class="field-items">
-      <div class="param">body <a href="#user_body">user_body</a> (required)</div>
-      
-            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
-                </div>  <!-- field-items -->
-
-
-
-
-
-    <!--Todo: process Response Object and its headers, schema, examples -->
-
-
-
-    <h3 class="field-label">Responses</h3>
-    <h4 class="field-label">201</h4>
-    User created successfully
-        <a href="#"></a>
-    <h4 class="field-label">400</h4>
-    Bad request
-        <a href="#"></a>
-  </div> <!-- method -->
-  <hr/>
 
   <h2><a name="__Models">Models</a></h2>
   [ Jump to <a href="#__Methods">Methods</a> ]
@@ -542,10 +478,9 @@
   <h3>Table of Contents</h3>
   <ol>
     <li><a href="#auth_login_body"><code>auth_login_body</code></a></li>
-    <li><a href="#auth_logout_body"><code>auth_logout_body</code></a></li>
-    <li><a href="#present_body"><code>present_body</code></a></li>
-    <li><a href="#present_body_1"><code>present_body_1</code></a></li>
-    <li><a href="#user_body"><code>user_body</code></a></li>
+    <li><a href="#presents_username_body"><code>presents_username_body</code></a></li>
+    <li><a href="#presents_username_body_1"><code>presents_username_body_1</code></a></li>
+    <li><a href="#presents_username_body_2"><code>presents_username_body_2</code></a></li>
   </ol>
 
   <div class="model">
@@ -557,36 +492,27 @@
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="auth_logout_body"><code>auth_logout_body</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="presents_username_body"><code>presents_username_body</code></a> <a class="up" href="#__Models">Up</a></h3>
     
     <div class="field-items">
-      <div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
+<div class="param">title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">link (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="present_body"><code>present_body</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="presents_username_body_1"><code>presents_username_body_1</code></a> <a class="up" href="#__Models">Up</a></h3>
     
     <div class="field-items">
-      <div class="param">Username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">Title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">nTitle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">nLink (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">link (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="present_body_1"><code>present_body_1</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="presents_username_body_2"><code>presents_username_body_2</code></a> <a class="up" href="#__Models">Up</a></h3>
     
     <div class="field-items">
-      <div class="param">Username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">Title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">Link (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="user_body"><code>user_body</code></a> <a class="up" href="#__Models">Up</a></h3>
-    
-    <div class="field-items">
-      <div class="param">Username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#BigDecimal">BigDecimal</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   </body>
