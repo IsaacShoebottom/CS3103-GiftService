@@ -26,8 +26,8 @@ def db_access(sqlProc, sqlArgs):
 
     return rows
 
-def auth_route(session):
-    if 'username' in session:
+def auth_route(username, session):
+    if username in session:
         response = {'status': 'success'}
         responseCode = 200
         success = True
@@ -35,6 +35,7 @@ def auth_route(session):
         response = {'status': 'failure'}
         responseCode = 403
         success = False
+        session.clear()
     return response, responseCode, success
 
 def check_route_data(request):

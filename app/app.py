@@ -62,6 +62,10 @@ class auth(Resource):
 		except:
 			abort(400) # bad request
 
+		# UNB logic
+		# Remove @unb.ca if it exists
+		request_params['username'] = request_params['username'].rstrip("@unb.ca")
+
 		# Already logged in
 		if request_params['username'] in session:
 			response = {'status': 'success'}
@@ -137,10 +141,12 @@ class presents(Resource):
 	# Sample command line usage:
     # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
 	def post(self, username):
-		responce, responseCode, success = auth_route(session)
-		responce, responseCode, success = check_route_data(request)
+		response, responseCode, success = auth_route(username, session)
 		if not success:
-			return make_response(jsonify(responce), responseCode)
+			return make_response(jsonify(response), responseCode)
+		response, responseCode, success = check_route_data(request)
+		if not success:
+			return make_response(jsonify(response), responseCode)
 
 		title = request.json['title']
 		link = request.json['link']
@@ -158,10 +164,12 @@ class presents(Resource):
 	# Sample command line usage:
     # curl -i -X PUT -H "Content-Type: application/json" -d '{"Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/presents
 	def put(self, username):
-		responce, responseCode, success = auth_route(session)
-		responce, responseCode, success = check_route_data(request)
+		response, responseCode, success = auth_route(username, session)
 		if not success:
-			return make_response(jsonify(responce), responseCode)
+			return make_response(jsonify(response), responseCode)
+		response, responseCode, success = check_route_data(request)
+		if not success:
+			return make_response(jsonify(response), responseCode)
 
 		id = request.json['id']
 		id = int(id)
@@ -181,8 +189,12 @@ class presents(Resource):
 	# Sample command line usage:
 	# curl -i -X DELETE -H "Content-Type: application/json" -d '{"Id": "id"}' http://cs3103.cs.unb.ca:8033/presents/ishoebot/
 	def delete(self, username):
-		if not request.json:
-			abort(400) # bad request
+		response, responseCode, success = auth_route(username, session)
+		if not success:
+			return make_response(jsonify(response), responseCode)
+		response, responseCode, success = check_route_data(request)
+		if not success:
+			return make_response(jsonify(response), responseCode)
 
 		id = request.json['id']
 		id = int(id)

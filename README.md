@@ -26,23 +26,23 @@ When searching, change to the browse tab and key in a name. To view how another 
 # Test Cases with CURL
 ```sh
 # Log the user in
-curl -i -H "Content-Type: application/json" -X POST -d '{"username": "name", "password": "pass"}' -c cookie-jar http://cs3103.cs.unb.ca:8034/auth/login
+curl -i -k -H "Content-Type: application/json" -X POST -d '{"username": "name", "password": "pass"}' -c cookie-jar https://cs3103.cs.unb.ca:8034/auth/login
 
 # Check for a login
-curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8034/auth/status
-
-# GET: Retrieve all presents from a specific username
-curl -i -X GET http://cs3103.cs.unb.ca:8034/presents/Rick
-
-# POST: Create a new present
-curl -i -X POST -H "Content-Type: application/json" -d '{"title": "Book", "link": "book.com"}' http://cs3103.cs.unb.ca:8034/present
-
-# PUT: Update a specific present
-curl -i -X PUT -H "Content-Type: application/json" -d '{"id": "42", "title": "Towels", "link": "towels.com"}' http://cs3103.cs.unb.ca:8034/present
-
-# DELETE: Delete a specific present
-curl -i -X DELETE -H "Content-Type: application/json" -d '{"id": "42"}' http://cs3103.cs.unb.ca:8034/present
+curl -i -k -H "Content-Type: application/json" -X GET -b cookie-jar https://cs3103.cs.unb.ca:8034/auth/status
 
 # Log the user out
-curl -i -H "Content-Type: application/json" -X POST -b cookie-jar http://cs3103.cs.unb.ca:8034/auth/logout
+curl -i -k -H "Content-Type: application/json" -X POST -b cookie-jar https://cs3103.cs.unb.ca:8034/auth/logout
+
+# GET: Retrieve all presents from a specific username
+curl -i -k -X GET https://cs3103.cs.unb.ca:8034/presents/ishoebot/
+
+# POST: Create a new present
+curl -i -k -X POST -H "Content-Type: application/json" -d '{"title": "Book", "link": "book.com"}' -b cookie-jar https://cs3103.cs.unb.ca:8034/presents/ishoebot/
+
+# PUT: Update a specific present
+curl -i -k -X PUT -H "Content-Type: application/json" -d '{"id": "42", "title": "Towels", "link": "towels.com"}' -b cookie-jar https://cs3103.cs.unb.ca:8034/presents/ishoebot/
+
+# DELETE: Delete a specific present
+curl -i -k -X DELETE -H "Content-Type: application/json" -d '{"id": "42"}' -b cookie-jar https://cs3103.cs.unb.ca:8034/presents/ishoebot/
 ```
