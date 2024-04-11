@@ -13,6 +13,8 @@ createApp({
         const error = ref('')
         const editModal = ref(null)
         const loginModal = ref(null)
+        const urlAlertDismissed = ref(false)
+        const loginAlertDismissed = ref(false)
         // Reactive data
         const editData = reactive({
             id: -1,
@@ -122,6 +124,10 @@ createApp({
         }
 
         async function search(term) {
+            if (term === '') {
+                presents.value = []
+                return
+            }
             await axios.get('/presents/' + term)
                 .then(response => {
                     presents.value = response.data.presents
@@ -183,6 +189,8 @@ createApp({
             editModal,
             loginModal,
             error,
+            urlAlertDismissed,
+            loginAlertDismissed,
             search,
             logout,
             status,

@@ -87,17 +87,17 @@
       </div>
     </div>
     <!-- Login alert -->
-    <div v-if="!userData.loggedIn" class="alert alert-light alert-dismissible">
+    <div v-if="!userData.loggedIn && !loginAlertDismissed" class="alert alert-light alert-dismissible">
       You are not logged in. You can still browse presents but you need to log in to add or edit presents.
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <button type="button" class="btn-close" @click="loginAlertDismissed = true"></button>
     </div>
     <!-- URL format alert -->
-    <div v-if="userData.loggedIn" class="alert alert-light alert-dismissible">
+    <div v-if="userData.loggedIn && view === views.profile && !urlAlertDismissed" class="alert alert-light alert-dismissible">
       Note: URLs can have any title, but must start with http:// or https://
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <button type="button" class="btn-close" @click="urlAlertDismissed = true"></button>
     </div>
     <!-- Error alert -->
-    <div v-if="error" class="alert alert-danger alert-dismissible">
+    <div v-if="error && view === views.profile" class="alert alert-danger alert-dismissible">
       {{ error }}
       <button type="button" class="btn-close" @click="error = ''"></button>
     </div>
