@@ -36,14 +36,6 @@ class Root(Resource):
 
 api.add_resource(Root,'/')
 
-class Developer(Resource):
-   # get method for developer page
-	def get(self):
-		return app.send_static_file('developer.html')
-
-api.add_resource(Developer,'/dev')
-
-
 # Auth routing: LOGIN, STATUS, LOGOUT
 class auth(Resource):
 	# Log the user in
