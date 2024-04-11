@@ -37,12 +37,16 @@ createApp({
                 password: userData.password
             }).then(() => {
                 userData.loggedIn = true
-            }).catch(error => {
+            }).catch(async error => {
                 console.error(error.response)
             })
-            userData.password = ''
+            if (userData.loggedIn) {
+                userData.password = ''
+                await viewProfile()
+            } else {
+                error.value = 'Invalid username or password'
+            }
             loginModal.value.hide()
-            await viewProfile()
         }
 
         async function logout() {
@@ -72,6 +76,7 @@ createApp({
         }
 
         async function add() {
+            let failed = false
             if (addData.title === '' || addData.link === '') {
                 error.value = 'Please fill out all fields'
                 return
@@ -80,17 +85,21 @@ createApp({
                 error.value = 'Please enter a valid URL'
                 return
             }
-            console.log(addData)
             await axios.post('/presents/' + userData.username, {
                 title: addData.title,
                 link: addData.link
             }).catch(error => {
                 console.error(error.response)
+                failed = true
             })
+            if (failed) {
+                error.value = 'Failed to add present'
+            }
             await search(userData.username)
         }
 
         async function edit() {
+            let failed = false
             if (editData.title === '' || editData.link === '') {
                 error.value = 'Please fill out all fields'
                 return
@@ -105,8 +114,13 @@ createApp({
                 link: editData.link
             }).catch(error => {
                 console.error(error.response)
+                failed = true
             })
-            await search(userData.username)
+            if (failed) {
+                error.value = 'Failed to edit present'
+            } else {
+                await search(userData.username)
+            }
             editModal.value.hide()
         }
 

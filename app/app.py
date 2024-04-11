@@ -83,18 +83,18 @@ class auth(Resource):
 				session['username'] = request_params['username']
 				response = {'status': 'success' }
 				responseCode = 201
+				# Check if user exists in the database
+				sqlProc = 'createUser'
+				sqlArgs = [request_params['username']]
+				try:
+					db_access(sqlProc, sqlArgs)
+				except Exception as e:
+					abort(500, message = e) # server error
 			except (LDAPException):
 				response = {'status': 'access denied'}
 				responseCode = 403
 			finally:
 				ldapConnection.unbind()
-
-		sqlProc = 'createUser'
-		sqlArgs = [request_params['username']]
-		try:
-			db_access(sqlProc, sqlArgs)
-		except Exception as e:
-			abort(500, message = e) # server error
 
 		return make_response(jsonify(response), responseCode)
 

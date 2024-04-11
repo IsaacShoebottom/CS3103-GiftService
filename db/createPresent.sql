@@ -1,7 +1,7 @@
 DELIMITER //
 DROP PROCEDURE IF EXISTS createPresent //
 
-CREATE PROCEDURE createPresent(IN usernameIn varchar(20), IN titleIn varchar(20), IN linkIn varchar(50))
+CREATE PROCEDURE createPresent(IN usernameIn varchar(20), IN titleIn varchar(128), IN linkIn varchar(4096))
 BEGIN
 INSERT INTO presents (userId, title, link) 
     VALUES (
