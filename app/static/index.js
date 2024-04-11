@@ -81,7 +81,7 @@ createApp({
                 error.value = 'Please fill out all fields'
                 return
             }
-            if (!addData.link.startsWith('http://') || !addData.link.startsWith('https://')) {
+            if (!(addData.link.startsWith('http://') || addData.link.startsWith('https://'))) {
                 error.value = 'Please enter a valid URL'
                 return
             }
@@ -104,7 +104,7 @@ createApp({
                 error.value = 'Please fill out all fields'
                 return
             }
-            if (!editData.link.startsWith('http://') || !editData.link.startsWith('https://')) {
+            if (!(editData.link.startsWith('http://') || editData.link.startsWith('https://'))) {
                 error.value = 'Please enter a valid URL'
                 return
             }
