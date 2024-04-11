@@ -8,7 +8,7 @@ from flask_session import Session
 import cgitb
 cgitb.enable()
 
-from util import db_access, auth_route, check_route_data
+from util import db_access, auth_route, check_route_data, is_url
 import settings # Our server and db settings, stored in settings.py
 
 app = Flask(__name__, static_url_path='/static')
@@ -47,7 +47,6 @@ api.add_resource(Developer,'/dev')
 # Auth routing: LOGIN, STATUS, LOGOUT
 class auth(Resource):
 	# Log the user in
-	# curl -i -H "Content-Type: application/json" -X POST -d '{"username": "bfanjoy", "password": "pass"}' -c cookie-jar http://cs3103.cs.unb.ca:8033/auth/login
 	@app.route('/auth/login', methods=['POST'])
 	def login():
 		if not request.json:
@@ -62,7 +61,7 @@ class auth(Resource):
 		except:
 			abort(400) # bad request
 
-		# UNB logic
+		request_params['username'] = request_params['username'].strip()
 		# Remove @unb.ca if it exists
 		request_params['username'] = request_params['username'].rstrip("@unb.ca")
 
@@ -100,7 +99,6 @@ class auth(Resource):
 		return make_response(jsonify(response), responseCode)
 
 	# Check for a login
-	# curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8033/auth/status
 	@app.route('/auth/status', methods=['GET'])
 	def status():
 		if 'username' in session:
@@ -113,7 +111,8 @@ class auth(Resource):
 			response = {'status': 'failure'}
 			responseCode = 403
 		return make_response(jsonify(response), responseCode)
-
+	
+	# Log the user out
 	@app.route('/auth/logout', methods=['POST'])
 	def logout():
 		try:
@@ -127,8 +126,6 @@ class auth(Resource):
 	
 class presents(Resource):
  	# GET: Retrieve all presents from a specific username
- 	# Sample command line usage:
-    # curl -i -X GET http://cs3103.cs.unb.ca:8033/presents/Rick
 	def get(self, username):
 		sqlProc = 'getPresentsByUsername'
 		sqlArgs = [username]
@@ -138,8 +135,7 @@ class presents(Resource):
 			abort(500, message = e) # server error
 		return make_response(jsonify({'presents': rows}), 200) # turn set into json and return it
 	
-	# Sample command line usage:
-    # curl -i -X POST -H "Content-Type: application/json" -d '{"Title": "Book", "Link": "example.com"}' http://cs3103.cs.unb.ca:8033/presents
+	# POST: Create a new present for a specific username
 	def post(self, username):
 		response, responseCode, success = auth_route(username, session)
 		if not success:
@@ -151,6 +147,9 @@ class presents(Resource):
 		title = request.json['title']
 		link = request.json['link']
 
+		if not is_url(link):
+			abort(400)
+
 		sqlProc = 'createPresent'
 		sqlArgs = [username, title, link]
 		try:
@@ -161,8 +160,6 @@ class presents(Resource):
 		return make_response('Present created', 201) # successful resource creation
 	
 	# PUT: Update a specific present
-	# Sample command line usage:
-    # curl -i -X PUT -H "Content-Type: application/json" -d '{"Title": "Book", "nTitle": "Towels", "nLink": "example2.com"}' http://cs3103.cs.unb.ca:8033/presents
 	def put(self, username):
 		response, responseCode, success = auth_route(username, session)
 		if not success:
@@ -176,6 +173,9 @@ class presents(Resource):
 		title = request.json['title']
 		link = request.json['link']
 
+		if not is_url(link):
+			abort(400)
+
 		sqlProc = 'updatePresentById'
 		sqlArgs = [id, title, link]
 		try:
@@ -186,8 +186,6 @@ class presents(Resource):
 		return make_response('Present updated', 204)
 	
 	# DELETE: Delete a specific present
-	# Sample command line usage:
-	# curl -i -X DELETE -H "Content-Type: application/json" -d '{"Id": "id"}' http://cs3103.cs.unb.ca:8033/presents/ishoebot/
 	def delete(self, username):
 		response, responseCode, success = auth_route(username, session)
 		if not success:

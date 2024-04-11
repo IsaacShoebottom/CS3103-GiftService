@@ -10,6 +10,7 @@ createApp({
         const term = ref('')
         const presents = ref([])
         const view = ref(views.browse)
+        const error = ref('')
         const editModal = ref(null)
         const loginModal = ref(null)
         // Reactive data
@@ -69,6 +70,14 @@ createApp({
         }
 
         async function add() {
+            if (addData.title === '' || addData.link === '') {
+                error.value = 'Please fill out all fields'
+                return
+            }
+            if (!addData.link.startsWith('http://') || !addData.link.startsWith('https://')) {
+                error.value = 'Please enter a valid URL'
+                return
+            }
             console.log(addData)
             await axios.post('/presents/' + userData.username, {
                 title: addData.title,
@@ -80,6 +89,14 @@ createApp({
         }
 
         async function edit() {
+            if (editData.title === '' || editData.link === '') {
+                error.value = 'Please fill out all fields'
+                return
+            }
+            if (!editData.link.startsWith('http://') || !editData.link.startsWith('https://')) {
+                error.value = 'Please enter a valid URL'
+                return
+            }
             await axios.put('/presents/' + userData.username, {
                 id: editData.id,
                 title: editData.title,
@@ -165,6 +182,7 @@ createApp({
             addData,
             editModal,
             loginModal,
+            error,
             search,
             logout,
             status,

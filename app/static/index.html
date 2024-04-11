@@ -91,6 +91,16 @@
       You are not logged in. You can still browse presents but you need to log in to add or edit presents.
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    <!-- URL format alert -->
+    <div v-if="userData.loggedIn" class="alert alert-light alert-dismissible">
+      Note: URLs can have any title, but must start with http:// or https://
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <!-- Error alert -->
+    <div v-if="error" class="alert alert-danger alert-dismissible">
+      {{ error }}
+      <button type="button" class="btn-close" @click="error = ''"></button>
+    </div>
 
     <!-- Inputs for profile and browse tabs -->
     <div v-if="view === views.browse" class="input-group">
