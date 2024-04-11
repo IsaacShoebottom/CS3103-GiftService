@@ -2,17 +2,17 @@
 
 <head>
   <title>Welcome to Presents R Us</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
   <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <script type="module" src="/static/index.js"></script>
-
 </head>
 <html>
 
 <body>
-  <div class="container-fluid" id="app">
+  <div class="container-xxl" id="app">
     <!-- Edit Modal -->
     <div class="modal fade" id="edit-modal">
       <div class="modal-dialog modal-dialog-centered">
@@ -58,7 +58,6 @@
 
     <!-- Navbar -->
     <div class="navbar navbar-expand-sm">
-      <!-- Horrible abuse of navbar-nav. Should make profile and browse collapseable but thats more work -->
       <a class="navbar-brand" href="#">Presents R Us</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
         <span class="navbar-toggler-icon"></span>

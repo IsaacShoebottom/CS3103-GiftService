@@ -5,3 +5,7 @@ settings.py
 __pycache__/
 flask_session/
 .DS_Store
+
+# Should probably not commit these, but since this is not really being deployed, it's fine
+# cert.pem
+# key.pem

@@ -1,7 +1,7 @@
-#/usr/bin/env python
 APP_HOST = ''
 APP_PORT = 
 APP_DEBUG = True
+APP_SSL = ("", "")
 
 DB_HOST = ''
 DB_USER = ''

@@ -201,4 +201,4 @@ api.add_resource(presents, '/presents/<string:username>/')
 
 # Main
 if __name__ == "__main__":
-	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG)
+	app.run(host=settings.APP_HOST, port=settings.APP_PORT, debug=settings.APP_DEBUG, ssl_context=settings.APP_SSL)

@@ -1,6 +1,5 @@
-#
-# Database Utilities
-#
+# General Utils
+
 import pymysql
 import pymysql.cursors
 import settings
